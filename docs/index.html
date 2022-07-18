@@ -58,24 +58,40 @@
     //   msg.pitch = 0.8; // 音高：0-1
     //   synth.speak(msg); // 播放
     // }
+    // function getVoice(text) {
+    //   const msg = new SpeechSynthesisUtterance(text);
+    //   //   return Object.assign(
+    //   //     {
+    //   //       text: "", // 文字内容
+    //   //       lang: "zh-CN", // 使用的语言:中文
+    //   //       volume: 0.8, // 声音音量：0-1
+    //   //       rate: 1.5, // 语速：0-10
+    //   //       pitch: 0.8, // 音高：0-1
+    //   //     },
+    //   //     msg
+    //   //   );
+    //   return msg;
+    // }
     const sourceList = [{ label: "百度", getUrl: function () {} }];
-    function getVoice(text) {
-      const msg = new SpeechSynthesisUtterance(text);
-      //   return Object.assign(
-      //     {
-      //       text: "", // 文字内容
-      //       lang: "zh-CN", // 使用的语言:中文
-      //       volume: 0.8, // 声音音量：0-1
-      //       rate: 1.5, // 语速：0-10
-      //       pitch: 0.8, // 音高：0-1
-      //     },
-      //     msg
-      //   );
-      return msg;
-    }
-    function speak(text) {
-      const synth = window.speechSynthesis;
-      synth.speak(getVoice(text)); // 播放
+    const commandList = [
+      { text: "收缩", time: 10, voice: null },
+      { text: "放松", time: 10 },
+    ];
+    function speak(index) {
+      // const synth = window.speechSynthesis;
+      // synth.speak(getVoice(text)); // 播放
+      const command = commandList[index];
+      return new Promise(function (resolve, reject) {
+        if (!command.voice) {
+          command.voice = loadVoice(command.text);
+        }
+        command.voice.onended = function () {
+          resolve();
+        };
+        command.voice.play();
+      }).catch(function (err) {
+        alert("语音播放错误");
+      });
     }
     function speakTest(text) {
       // var url = "http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&text='" + encodeURI(text);
@@ -87,8 +103,11 @@
         alert(1);
       };
     }
-    function loadVoiceList() {
-      return [];
+    function loadVoice(text) {
+      var url = `https://fanyi.sogou.com/reventondc/synthesis?text=${text}&speed=1&lang=zh-CHS&from=translateweb&speaker=6`;
+
+      const voice = new Audio(url);
+      return voice;
     }
     function useCount() {
       // 是否在计时
@@ -103,16 +122,7 @@
       const pausedBtnText = Vue.computed(function () {
         return paused.value ? "继续" : "暂停";
       });
-      const commandList = [
-        {
-          text: "收缩",
-          time: 10,
-        },
-        {
-          text: "放松",
-          time: 10,
-        },
-      ];
+
       const options = Vue.reactive({
         perTime: 10,
         totalCount: 20 * 60,
@@ -176,8 +186,8 @@
             const command = commandList[currentCommand.index];
             currentCommand.text = command.text;
             currentCommand.time = command.time;
-            speakTest(currentCommand.text);
-            setTimeout(next, 500);
+            speak(currentCommand.index).then(next);
+            // setTimeout(next, 500);
           } else {
             currentCommand.time -= 1;
             next();
@@ -190,18 +200,8 @@
     }
     Vue.createApp({
       setup() {
-        const { status, toggleStatus, paused, togglePaused, currentCommand, currentCount, MainBtnText, pausedBtnText } =
-          useCount();
-        return {
-          status,
-          paused,
-          MainBtnText,
-          toggleStatus,
-          currentCommand,
-          currentCount,
-          togglePaused,
-          pausedBtnText,
-        };
+        const countObj = useCount();
+        return { ...countObj };
       },
     }).mount("#app");
   </script>
