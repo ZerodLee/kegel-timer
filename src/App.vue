@@ -16,20 +16,21 @@
       123
     </v-navigation-drawer>
     <v-main>
+      <v-container fluid style="position: absolute">
+        <div
+          class="text-h1 text-center"
+          :class="[expand ? 'scale-03 mt-12' : 'scale-1']"
+          style="transition: transform 0.3s linear, margin 0.3s linear"
+        >
+          20:00
+        </div>
+      </v-container>
       <v-container fluid>
-        <div class="text-center pt-8">
-          <div
-            class="text-h1 mb-6"
-            :class="[expand ? 'text-h5' : 'text-h1']"
-            style="transition: font-size 0.3s linear"
-          >
-            20:00
-          </div>
+        <div class="text-center mt-16 pt-16">
           <v-expand-transition>
             <v-card
               v-show="expand"
               height="300"
-              
               class="mx-auto secondary"
             ></v-card>
           </v-expand-transition>
@@ -75,3 +76,12 @@ export default {
   },
 };
 </script>
+
+<style>
+.scale-03 {
+  transform: scale(0.3);
+}
+.scale-1 {
+  transform: scale(1);
+}
+</style>
