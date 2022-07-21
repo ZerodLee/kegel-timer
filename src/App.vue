@@ -28,28 +28,36 @@
       <v-container fluid>
         <div class="text-center mt-16 pt-16">
           <v-expand-transition>
-            <v-card
-              v-show="expand"
-              height="300"
-              class="mx-auto secondary"
-            ></v-card>
+            <v-card v-show="expand" height="270" class="mx-auto">
+              <v-card-text>
+                <!-- <div>Word of the Day</div> -->
+                <p class="text-h5 text--primary mb-8">收缩</p>
+                <p class="text-h1">10</p>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn
+                variant="tonal"
+                  size="x-large"
+                  color="orange darken-2"
+                  @click="expand = true"
+                >
+                  暂停
+                </v-btn>
+              </v-card-actions>
+            </v-card>
           </v-expand-transition>
           <v-btn
-            color="success"
+            :color="expand ? 'red-darken-2' : 'success'"
             icon
+            width="100"
+            height="100"
             size="x-large"
-            class="mx-auto"
+            class="mx-auto mt-6"
             @click="expand = !expand"
           >
             开始
           </v-btn>
         </div>
-
-        <v-row dense>
-          <v-col v-for="n in 8" :key="n" cols="3">
-            <v-sheet color="grey-lighten-2" height="96"></v-sheet>
-          </v-col>
-        </v-row>
       </v-container>
     </v-main>
   </v-app>
