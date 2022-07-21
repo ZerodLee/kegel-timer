@@ -19,43 +19,45 @@
       <v-container fluid style="position: absolute">
         <div
           class="text-h1 text-center"
-          :class="[expand ? 'scale-03 mt-12' : 'scale-1']"
+          :class="[isRunning ? 'scale-03 mt-12' : 'scale-1']"
           style="transition: transform 0.3s linear, margin 0.3s linear"
         >
-          20:00
+          {{ currentCount }}
         </div>
       </v-container>
       <v-container fluid>
         <div class="text-center mt-16 pt-16">
           <v-expand-transition>
-            <v-card v-show="expand" height="270" class="mx-auto">
+            <v-card v-show="isRunning" elevation="2" height="270" class="mx-auto">
               <v-card-text>
                 <!-- <div>Word of the Day</div> -->
-                <p class="text-h5 text--primary mb-8">收缩</p>
-                <p class="text-h1">10</p>
+                <p class="text-h5 text--primary mb-8">
+                  {{ currentCommand.text }}
+                </p>
+                <p class="text-h1">{{ currentCommand.time }}</p>
               </v-card-text>
               <v-card-actions>
                 <v-btn
-                variant="tonal"
+                  variant="tonal"
                   size="x-large"
                   color="orange darken-2"
-                  @click="expand = true"
+                  @click="togglePaused"
                 >
-                  暂停
+                  {{ pausedBtnText }}
                 </v-btn>
               </v-card-actions>
             </v-card>
           </v-expand-transition>
           <v-btn
-            :color="expand ? 'red-darken-2' : 'success'"
+            :color="isRunning ? 'red-darken-2' : 'success'"
             icon
             width="100"
             height="100"
             size="x-large"
             class="mx-auto mt-6 text-h5"
-            @click="expand = !expand"
+            @click="toggleStatus"
           >
-            开始
+            {{ MainBtnText }}
           </v-btn>
         </div>
       </v-container>
@@ -67,6 +69,7 @@
 import HelloWorld from "./components/HelloWorld.vue";
 import { mdiDotsVertical } from "@mdi/js";
 import { ref } from "vue";
+import useCount from "./useCount";
 export default {
   name: "App",
 
@@ -75,11 +78,28 @@ export default {
   },
   setup() {
     const drawer = ref(false);
-    const expand = ref(false);
+
+    const {
+      isRunning,
+      toggleStatus,
+      paused,
+      togglePaused,
+      currentCommand,
+      currentCount,
+      MainBtnText,
+      pausedBtnText,
+    } = useCount();
     return {
       drawer,
-      expand,
       mdiDotsVertical,
+      isRunning,
+      toggleStatus,
+      paused,
+      togglePaused,
+      currentCommand,
+      currentCount,
+      MainBtnText,
+      pausedBtnText,
     };
   },
 };
