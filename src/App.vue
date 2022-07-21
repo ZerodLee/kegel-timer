@@ -52,7 +52,7 @@
             width="100"
             height="100"
             size="x-large"
-            class="mx-auto mt-6"
+            class="mx-auto mt-6 text-h5"
             @click="expand = !expand"
           >
             开始
