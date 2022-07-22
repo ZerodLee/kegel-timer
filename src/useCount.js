@@ -53,7 +53,8 @@ export default function useCount() {
     index: 0,
   });
   const currentCount = computed(function () {
-    return Math.floor(currentCommand.count / 60) + ":" + (currentCommand.count % 60);
+    const secends = currentCommand.count % 60;
+    return Math.floor(currentCommand.count / 60) + ":" + (secends < 10 ? `0${secends}` : secends);
   });
   function toggleStatus() {
     if (!isRunning.value) {
