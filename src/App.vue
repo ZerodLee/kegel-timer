@@ -11,10 +11,10 @@
         <v-btn :icon="mdiDotsVertical"></v-btn>
       </template>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" bottom temporary>
-      <!-- <v-list :items="items"></v-list> -->
+    <!-- <v-navigation-drawer v-model="drawer" bottom temporary>
       123
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
+    <SettingsDrawer v-model="drawer" />
     <v-main>
       <v-container fluid style="position: absolute">
         <div
@@ -28,7 +28,12 @@
       <v-container fluid>
         <div class="text-center mt-16 pt-16">
           <v-expand-transition>
-            <v-card v-show="isRunning" elevation="2" height="270" class="mx-auto">
+            <v-card
+              v-show="isRunning"
+              elevation="2"
+              height="270"
+              class="mx-auto"
+            >
               <v-card-text>
                 <!-- <div>Word of the Day</div> -->
                 <p class="text-h5 text--primary mb-8">
@@ -66,7 +71,7 @@
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import SettingsDrawer from "./components/SettingsDrawer.vue";
 import { mdiDotsVertical } from "@mdi/js";
 import { ref } from "vue";
 import useCount from "./useCount";
@@ -74,7 +79,7 @@ export default {
   name: "App",
 
   components: {
-    HelloWorld,
+    SettingsDrawer,
   },
   setup() {
     const drawer = ref(false);
