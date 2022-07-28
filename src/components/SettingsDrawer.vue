@@ -2,26 +2,34 @@
   <v-navigation-drawer
     :model-value="modelVlaue"
     @update:modelValue="updateDrawer"
+    touchless
     bottom
     temporary
   >
     <v-form ref="form" v-model="valid" lazy-validation class="pa-4">
-      <v-text-field
-        v-model="name"
-        :counter="10"
-        :rules="nameRules"
-        label="Name"
-        required
-      ></v-text-field>
+      <div class="text-h5">设置</div>
+      <v-divider class="my-4"></v-divider>
+      <div class="">
+        计时时长：<span class="text-h6 mx-2">{{ setting.total }}</span
+        >分钟
+      </div>
 
-      <v-text-field
-        v-model="email"
-        :rules="emailRules"
-        label="E-mail"
-        required
-      ></v-text-field>
+      <v-slider v-model="setting.total" step="1" min="1" max="40"></v-slider>
 
-      <v-select
+      <div class="">
+        间隔时长：<span class="text-h6 mx-2">{{ setting.interval }}</span
+        >秒
+      </div>
+
+      <v-slider v-model="setting.interval" step="1" min="1" max="15"></v-slider>
+
+      <div class="d-flex justify-space-around align-center fill-height">
+        <v-btn color="success" @click="updateDrawer"> 确认 </v-btn>
+
+        <v-btn color="warning" @click="updateDrawer"> 重置 </v-btn>
+      </div>
+
+      <!-- <v-select
         v-model="select"
         :items="items"
         :rules="[(v) => !!v || 'Item is required']"
@@ -36,19 +44,26 @@
         required
       ></v-checkbox>
 
-      <v-btn :disabled="!valid" color="success" class="mr-4" @click="updateDrawer">
+      <v-btn
+        :disabled="!valid"
+        color="success"
+        class="mr-4"
+        @click="updateDrawer"
+      >
         Validate
       </v-btn>
 
-      <v-btn color="error" class="mr-4" @click="updateDrawer"> Reset Form </v-btn>
+      <v-btn color="error" class="mr-4" @click="updateDrawer">
+        Reset Form
+      </v-btn>
 
-      <v-btn color="warning" @click="updateDrawer"> Reset Validation </v-btn>
+      <v-btn color="warning" @click="updateDrawer"> Reset Validation </v-btn> -->
     </v-form>
   </v-navigation-drawer>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, reactive, toRaw } from "vue";
 export default {
   props: {
     modelVlaue: {
@@ -56,28 +71,39 @@ export default {
       default: false,
     },
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "updateSetting"],
   setup(props, ctx) {
     const drawer = ref(false);
+    const setting = reactive({
+      total: 20, // mins
+      interval: 10,
+      voice: null,
+      endNotice: true,
+    });
     return {
+      setting,
       // drawer
       updateDrawer(value) {
         ctx.emit("update:modelValue", value);
+        if (!value) {
+          // 更新数据
+          ctx.emit("updateSetting", toRaw(setting));
+        }
       },
       valid: true,
-      name: "",
-      nameRules: [
-        (v) => !!v || "Name is required",
-        (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
-      ],
-      email: "",
-      emailRules: [
-        (v) => !!v || "E-mail is required",
-        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
-      ],
-      select: null,
-      items: ["Item 1", "Item 2", "Item 3", "Item 4"],
-      checkbox: false,
+      // name: "",
+      // nameRules: [
+      //   (v) => !!v || "Name is required",
+      //   (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+      // ],
+      // email: "",
+      // emailRules: [
+      //   (v) => !!v || "E-mail is required",
+      //   (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+      // ],
+      // select: null,
+      // items: ["Item 1", "Item 2", "Item 3", "Item 4"],
+      // checkbox: false,
     };
   },
 };

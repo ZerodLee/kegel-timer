@@ -1,5 +1,5 @@
 import { ref, computed, reactive } from "vue";
-
+import { totalCount, interval } from "./interval";
 const sourceList = [{ label: "百度", getUrl: function () {} }];
 const commandList = [
   { text: "收缩", time: 10, voice: null },
@@ -32,29 +32,22 @@ export default function useCount() {
   // 是否在计时
   const isRunning = ref(false);
   // 是否暂停
-  const paused = ref(false);
+  const isPaused = ref(false);
   // 主按钮文本
   const MainBtnText = computed(function () {
     return isRunning.value ? "结束" : "开始";
   });
   // 暂停按钮文本
   const pausedBtnText = computed(function () {
-    return paused.value ? "继续" : "暂停";
+    return isPaused.value ? "继续" : "暂停";
   });
+  const commandIndex = ref(1);
+
+  const commandText = ref("口令");
 
   const options = reactive({
     perTime: 10,
     totalCount: 20 * 60,
-  });
-  const currentCommand = reactive({
-    text: "口令",
-    time: 0,
-    count: options.totalCount,
-    index: 0,
-  });
-  const currentCount = computed(function () {
-    const secends = currentCommand.count % 60;
-    return Math.floor(currentCommand.count / 60) + ":" + (secends < 10 ? `0${secends}` : secends);
   });
   function toggleStatus() {
     if (!isRunning.value) {
@@ -64,57 +57,58 @@ export default function useCount() {
     }
   }
   function togglePaused() {
-    paused.value = !paused.value;
-    if (!paused.value) {
+    isPaused.value = !isPaused.value;
+    if (!isPaused.value) {
       next();
     }
   }
   function start() {
     isRunning.value = true;
-    reset();
-    currentCommand.index = commandList.length;
+    // reset();
+    commandIndex.value = commandList.length;
     next();
   }
   function end() {
     isRunning.value = false;
+    isPaused.value = false;
     reset();
   }
   function reset() {
-    currentCommand.text = "口令";
-    currentCommand.time = 0;
-    currentCommand.count = options.totalCount;
-    currentCommand.index = 0;
+    commandText.value = "口令";
+    commandIndex.value = 0;
+    interval.value = 0;
+    totalCount.value = options.totalCount;
   }
   function next() {
     setTimeout(function () {
       // 及时完毕
-      if (currentCommand.count <= 0) {
+      if (totalCount.value <= 0) {
         reset();
         return false;
       }
       // 停止
-      if (!isRunning.value || paused.value) {
+      if (!isRunning.value || isPaused.value) {
         return false;
       }
-      if (currentCommand.time <= 0) {
+      if (interval.value <= 0) {
         // 一轮循环结束
-        if (currentCommand.index >= commandList.length - 1) {
-          currentCommand.index = 0;
+        if (commandIndex.value >= commandList.length - 1) {
+          commandIndex.value = 0;
         } else {
-          currentCommand.index += 1;
+          commandIndex.value += 1;
         }
-        const command = commandList[currentCommand.index];
-        currentCommand.text = command.text;
-        currentCommand.time = command.time;
-        speak(currentCommand.index).then(next);
+        const command = commandList[commandIndex.value];
+        commandText.value = command.text;
+        interval.value = command.time;
+        speak(commandIndex.value).then(next);
         // setTimeout(next, 500);
       } else {
-        currentCommand.time -= 1;
+        interval.value -= 1;
         next();
       }
-      currentCommand.count -= 1;
+      totalCount.value -= 1;
     }, 1000);
   }
 
-  return { isRunning, toggleStatus, paused, togglePaused, currentCommand, currentCount, MainBtnText, pausedBtnText };
+  return { isRunning, toggleStatus, isPaused, togglePaused, MainBtnText, pausedBtnText, commandText };
 }

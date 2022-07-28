@@ -14,7 +14,7 @@
     <!-- <v-navigation-drawer v-model="drawer" bottom temporary>
       123
     </v-navigation-drawer> -->
-    <SettingsDrawer v-model="drawer" />
+    <SettingsDrawer v-model="drawer" @updateSetting="updateSetting" />
     <v-main>
       <v-container fluid style="position: absolute">
         <div
@@ -22,7 +22,7 @@
           :class="[isRunning ? 'scale-03 mt-12' : 'scale-1']"
           style="transition: transform 0.3s linear, margin 0.3s linear"
         >
-          {{ currentCount }}
+          {{ totalText }}
         </div>
       </v-container>
       <v-container fluid>
@@ -37,9 +37,9 @@
               <v-card-text>
                 <!-- <div>Word of the Day</div> -->
                 <p class="text-h5 text--primary mb-8">
-                  {{ currentCommand.text }}
+                  {{ commandText }}
                 </p>
-                <p class="text-h1">{{ currentCommand.time }}</p>
+                <p class="text-h1">{{ interval }}</p>
               </v-card-text>
               <v-card-actions>
                 <v-btn
@@ -74,6 +74,7 @@
 import SettingsDrawer from "./components/SettingsDrawer.vue";
 import { mdiDotsVertical } from "@mdi/js";
 import { ref } from "vue";
+import { interval, totalCount, totalText } from "./interval";
 import useCount from "./useCount";
 export default {
   name: "App",
@@ -87,24 +88,27 @@ export default {
     const {
       isRunning,
       toggleStatus,
-      paused,
       togglePaused,
-      currentCommand,
-      currentCount,
       MainBtnText,
       pausedBtnText,
+      commandText
     } = useCount();
     return {
       drawer,
       mdiDotsVertical,
       isRunning,
       toggleStatus,
-      paused,
       togglePaused,
-      currentCommand,
-      currentCount,
       MainBtnText,
       pausedBtnText,
+      commandText,
+      updateSetting(setting) {
+        // currentCommand.count = setting.total;
+        // currentCommand.time = setting.interval;
+      },
+      interval,
+      totalCount,
+      totalText,
     };
   },
 };

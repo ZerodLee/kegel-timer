@@ -10,7 +10,9 @@ export default defineConfig({
     vue(),
     VuetifyPlugin(),
     legacy({
-      targets: ["> 5%", "last 2 iOS major versions"],
+      targets: ["Chrome >= 49", "iOS >= 10"],
+      // polyfills: ["full/observable", "full/object", "full/array"],
+      // additionalLegacyPolyfills: ["resize-observer-polyfill"],
     }),
   ],
 });
