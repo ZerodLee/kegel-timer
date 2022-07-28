@@ -24,9 +24,9 @@
       <v-slider v-model="setting.interval" step="1" min="1" max="15"></v-slider>
 
       <div class="d-flex justify-space-around align-center fill-height">
-        <v-btn color="success" @click="updateDrawer"> 确认 </v-btn>
+        <v-btn color="success" @click="comfirmSetting"> 确认 </v-btn>
 
-        <v-btn color="warning" @click="updateDrawer"> 重置 </v-btn>
+        <v-btn color="warning" @click="comfirmSetting"> 重置 </v-btn>
       </div>
 
       <!-- <v-select
@@ -64,6 +64,7 @@
 
 <script>
 import { ref, reactive, toRaw } from "vue";
+import { totalCount, interval, setCommand } from "../interval";
 export default {
   props: {
     modelVlaue: {
@@ -80,15 +81,20 @@ export default {
       voice: null,
       endNotice: true,
     });
+    function updateDrawer(value) {
+      ctx.emit("update:modelValue", value);
+      if (!value) {
+        // 更新数据
+        ctx.emit("updateSetting", toRaw(setting));
+      }
+    }
     return {
       setting,
       // drawer
-      updateDrawer(value) {
-        ctx.emit("update:modelValue", value);
-        if (!value) {
-          // 更新数据
-          ctx.emit("updateSetting", toRaw(setting));
-        }
+      updateDrawer,
+      comfirmSetting() {
+        setCommand(setting.total * 60, setting.interval);
+        updateDrawer(false);
       },
       valid: true,
       // name: "",

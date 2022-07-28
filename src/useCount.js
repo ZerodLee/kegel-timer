@@ -1,10 +1,7 @@
 import { ref, computed, reactive } from "vue";
-import { totalCount, interval } from "./interval";
+import { totalCount, interval, commandList, commandOption } from "./interval";
 const sourceList = [{ label: "百度", getUrl: function () {} }];
-const commandList = [
-  { text: "收缩", time: 10, voice: null },
-  { text: "放松", time: 10 },
-];
+
 function loadVoice(text) {
   var url = `https://fanyi.sogou.com/reventondc/synthesis?text=${text}&speed=1&lang=zh-CHS&from=translateweb&speaker=6`;
 
@@ -45,10 +42,6 @@ export default function useCount() {
 
   const commandText = ref("口令");
 
-  const options = reactive({
-    perTime: 10,
-    totalCount: 20 * 60,
-  });
   function toggleStatus() {
     if (!isRunning.value) {
       start();
@@ -77,7 +70,7 @@ export default function useCount() {
     commandText.value = "口令";
     commandIndex.value = 0;
     interval.value = 0;
-    totalCount.value = options.totalCount;
+    totalCount.value = commandOption.total;
   }
   function next() {
     setTimeout(function () {
@@ -99,7 +92,7 @@ export default function useCount() {
         }
         const command = commandList[commandIndex.value];
         commandText.value = command.text;
-        interval.value = command.time;
+        interval.value = commandOption.interval;
         speak(commandIndex.value).then(next);
         // setTimeout(next, 500);
       } else {
