@@ -23,6 +23,12 @@
 
       <v-slider v-model="setting.interval" step="1" min="1" max="15"></v-slider>
 
+      <v-select v-model="setting.voice" :items="voiceList" variant="underlined">
+        <template v-slot:prepend>
+          <div class="">选择语音：</div>
+        </template>
+      </v-select>
+
       <div class="d-flex justify-space-around align-center fill-height">
         <v-btn color="success" @click="comfirmSetting"> 确认 </v-btn>
 
@@ -90,7 +96,23 @@ export default {
     }
     return {
       setting,
-      // drawer
+      voiceList: [
+        {
+          title: "百度",
+          value: "baidu",
+          url: "",
+        },
+        {
+          title: "搜狗",
+          value: "sogou",
+          url: "",
+        },
+        {
+          title: "有道",
+          value: "youdao",
+          url: "",
+        },
+      ],
       updateDrawer,
       comfirmSetting() {
         setCommand(setting.total * 60, setting.interval);
