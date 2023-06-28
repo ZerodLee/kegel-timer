@@ -3,8 +3,10 @@ import { totalCount, interval, commandList, commandOption } from "./interval";
 const sourceList = [{ label: "百度", getUrl: function () {} }];
 
 function loadVoice(text) {
-  var url = `https://fanyi.sogou.com/reventondc/synthesis?text=${text}&speed=1&lang=zh-CHS&from=translateweb&speaker=6`;
-
+  // http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=2&text=你要转换的文字
+  // var url = `https://fanyi.sogou.com/reventondc/synthesis?text=${text}&speed=1&lang=zh-CHS&from=translateweb&speaker=6`;
+  // const url = `http://tts.youdao.com/fanyivoice?word=${text}&le=zh&keyfrom=speaker-target`
+  const url = `https://api.oick.cn/txt/apiz.php?text=${text}&spd=3`
   const voice = new Audio(url);
   return voice;
 }
@@ -93,7 +95,8 @@ export default function useCount() {
         const command = commandList[commandIndex.value];
         commandText.value = command.text;
         interval.value = commandOption.interval;
-        speak(commandIndex.value).then(next);
+        speak(commandIndex.value);
+        next()
         // setTimeout(next, 500);
       } else {
         interval.value -= 1;
