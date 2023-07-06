@@ -6,6 +6,7 @@ function loadVoice(text) {
   // http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=2&text=你要转换的文字
   // var url = `https://fanyi.sogou.com/reventondc/synthesis?text=${text}&speed=1&lang=zh-CHS&from=translateweb&speaker=6`;
   // const url = `http://tts.youdao.com/fanyivoice?word=${text}&le=zh&keyfrom=speaker-target`
+  // 直接转换mp3格式 https://api.vvhan.com/api/song?txt=%E5%86%85%E5%AE%B9
   const url = `https://api.oick.cn/txt/apiz.php?text=${text}&spd=3`
   const voice = new Audio(url);
   return voice;
